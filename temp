@@ -1,0 +1,24 @@
+#!/bin/bash
+
+cat << THE_END
+set terminal wxt
+set xdata time
+set timefmt "%H-%M"
+set xtics format "%H-%M"
+plot '-' using 1:2 with boxes
+THE_END
+
+
+while read LINE
+do
+
+
+HH=$(echo $LINE | cut -f 3 -d , | cut -c12-13)
+MM=$(echo $LINE | cut -f 3 -d , | cut -c15-16)
+Temperature=$(echo $LINE | cut -f 6 -d ,)
+
+echo $HH-$MM $Temperature
+
+done
+
+echo e

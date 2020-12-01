@@ -1,0 +1,42 @@
+#!/bin/bash
+
+DATE=11/23/2020
+CODE=LZIB
+
+if [ $# -gt 2 ]
+then
+    	echo musia byt 2 argumenty:
+       	echo -datum: DD-MM-YYYY
+	echo -spravny kod letiska: CCCC	
+	exit -1
+	
+elif [ $# -eq 1 ]
+then
+	DD=$(date -d yesterday +"%d-%m-%Y" | cut -c1-2)
+	MM=$(date -d yesterday +"%d-%m-%Y"  | cut -c4-5)
+	YYYY=$(date -d yesterday +"%d-%m-%Y"  | cut -c7-10)
+	
+	START=$(echo $(date -d "$MM"/"$DD"/"$YYYY" +'%s'))
+	END=$(echo "$START" + 24*60*60 | bc)
+	
+	CODE="$1"
+	
+	curl -s 'https://aviationweather.gov/adds/dataserver_current/httpparam?dataSource=metars&requestType=retrieve&format=csv&stationString='"$CODE"'&startTime='"$START"'&endTime='"$END"'' | grep "$CODE"
+
+else
+	DATE="$1"
+	CODE="$2"
+
+
+
+	DD=$(echo "$DATE" | cut -c1-2)
+	MM=$(echo "$DATE" | cut -c4-5)
+	YYYY=$(echo "$DATE" | cut -c7-10)
+
+	# vypocet zaciatocnej a koncovej hodnoty v sekundach pre datum
+	START=$(echo $(date -d "$MM"/"$DD"/"$YYYY" +'%s'))
+	END=$(echo "$START" + 24*60*60 | bc)
+
+	curl -s 'https://aviationweather.gov/adds/dataserver_current/httpparam?dataSource=metars&requestType=retrieve&format=csv&stationString='"$CODE"'&startTime='"$START"'&endTime='"$END"'' | grep "$CODE"
+
+fi
